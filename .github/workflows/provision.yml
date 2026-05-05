@@ -9,12 +9,13 @@ jobs:
   provision:
     runs-on: ubuntu-latest
     env:
+      # Aqui está o segredo: conectamos o nome que VOCÊ criou com o nome que o PHP QUER
       OCI_USER_ID: ${{ secrets.OCI_USER_ID }}
       OCI_TENANCY_ID: ${{ secrets.OCI_TENANCY_ID }}
       OCI_REGION: ${{ secrets.OCI_REGION }}
-      OCI_FINGERPRINT: ${{ secrets.OCI_FINGERPRINT }}
+      OCI_KEY_FINGERPRINT: ${{ secrets.OCI_FINGERPRINT }}
       OCI_SUBNET_ID: ${{ secrets.OCI_SUBNET_ID }}
-      OCI_KEY_FILE: ${{ secrets.OCI_KEY_FILE }}
+      OCI_PRIVATE_KEY_FILENAME: ${{ secrets.OCI_KEY_FILE }}
     steps:
       - uses: actions/checkout@v4
       - name: Set up PHP
