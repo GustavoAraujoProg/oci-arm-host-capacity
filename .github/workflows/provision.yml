@@ -37,7 +37,7 @@ jobs:
           echo "OCI_SUBNET_ID=$(clean_secret "${{ secrets.OCI_SUBNET_ID }}")" >> .env
           echo "OCI_IMAGE_ID=$(clean_secret "${{ secrets.OCI_IMAGE_ID }}")" >> .env
           echo "OCI_AVAILABILITY_DOMAIN=$(clean_secret "${{ secrets.OCI_AVAILABILITY_DOMAIN }}")" >> .env
-          echo "OCI_SSH_PUBLIC_KEY=$(clean_secret "${{ secrets.OCI_SSH_PUBLIC_KEY }}")" >> .env
+          echo 'OCI_SSH_PUBLIC_KEY=${{ secrets.OCI_SSH_PUBLIC_KEY }}' >> .env
           echo "OCI_OCPUS=4" >> .env
           echo "OCI_MEMORY_IN_GBS=24" >> .env
           echo "OCI_SHAPE=VM.Standard.A1.Flex" >> .env
