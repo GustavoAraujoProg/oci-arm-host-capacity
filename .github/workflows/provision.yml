@@ -1,0 +1,27 @@
+name: OCI Provisioning
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '*/5 * * * *' # Tenta a cada 5 minutos
+
+jobs:
+  provision:
+    runs-on: ubuntu-latest
+    env:
+      OCI_USER_ID: ${{ secrets.OCI_USER_ID }}
+      OCI_TENANCY_ID: ${{ secrets.OCI_TENANCY_ID }}
+      OCI_REGION: ${{ secrets.OCI_REGION }}
+      OCI_FINGERPRINT: ${{ secrets.OCI_FINGERPRINT }}
+      OCI_SUBNET_ID: ${{ secrets.OCI_SUBNET_ID }}
+      OCI_KEY_FILE: ${{ secrets.OCI_KEY_FILE }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+      - name: Install dependencies
+        run: composer install
+      - name: Run provisioning
+        run: php index.php
