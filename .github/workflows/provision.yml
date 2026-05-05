@@ -19,26 +19,28 @@ jobs:
       - name: Install dependencies
         run: composer install
 
-      - name: Construir ambiente para o PHP
+      - name: Preparar Chave Privada
         run: |
-          # 1. Cria o arquivo .env injetando os seus secrets do GitHub
-          echo "OCI_REGION=${{ secrets.OCI_REGION }}" >> .env
-          echo "OCI_USER_ID=${{ secrets.OCI_USER_ID }}" >> .env
-          echo "OCI_TENANCY_ID=${{ secrets.OCI_TENANCY_ID }}" >> .env
-          echo "OCI_KEY_FINGERPRINT=${{ secrets.OCI_FINGERPRINT }}" >> .env
-          echo "OCI_SUBNET_ID=${{ secrets.OCI_SUBNET_ID }}" >> .env
-          echo "OCI_IMAGE_ID=${{ secrets.OCI_IMAGE_ID }}" >> .env
-          echo "OCI_AVAILABILITY_DOMAIN=${{ secrets.OCI_AVAILABILITY_DOMAIN }}" >> .env
-          echo "OCI_OCPUS=4" >> .env
-          echo "OCI_MEMORY_IN_GBS=24" >> .env
-          echo "OCI_SHAPE=VM.Standard.A1.Flex" >> .env
+          # Cria um .env vazio só para o script PHP não dar erro de arquivo não encontrado
+          touch .env
           
-          # 2. Aponta o nome do arquivo da chave
-          echo "OCI_PRIVATE_KEY_FILENAME=oci_api_key.pem" >> .env
-          
-          # 3. Cria o arquivo físico da chave privada com as permissões corretas
+          # Cria o arquivo da chave privada isolado e seguro
           echo "${{ secrets.OCI_KEY_FILE }}" > oci_api_key.pem
           chmod 600 oci_api_key.pem
 
       - name: Run provisioning
+        env:
+          # Injeção direta no sistema, sem risco de quebrar por causa de espaços!
+          OCI_REGION: ${{ secrets.OCI_REGION }}
+          OCI_USER_ID: ${{ secrets.OCI_USER_ID }}
+          OCI_TENANCY_ID: ${{ secrets.OCI_TENANCY_ID }}
+          OCI_KEY_FINGERPRINT: ${{ secrets.OCI_FINGERPRINT }}
+          OCI_SUBNET_ID: ${{ secrets.OCI_SUBNET_ID }}
+          OCI_IMAGE_ID: ${{ secrets.OCI_IMAGE_ID }}
+          OCI_AVAILABILITY_DOMAIN: ${{ secrets.OCI_AVAILABILITY_DOMAIN }}
+          OCI_SSH_PUBLIC_KEY: ${{ secrets.OCI_SSH_PUBLIC_KEY }}
+          OCI_OCPUS: 4
+          OCI_MEMORY_IN_GBS: 24
+          OCI_SHAPE: VM.Standard.A1.Flex
+          OCI_PRIVATE_KEY_FILENAME: oci_api_key.pem
         run: php index.php
